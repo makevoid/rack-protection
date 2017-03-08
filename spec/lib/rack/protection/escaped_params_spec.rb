@@ -29,6 +29,15 @@ describe Rack::Protection::EscapedParams do
       expect(body).to eq('&lt;bar&gt;')
     end
 
+    it 'escapes hash keys' do
+      mock_app do |env|
+        request = Rack::Request.new(env)
+        [200, {'Content-Type' => 'text/plain'}, [request.params['foo'].keys.first]]
+      end
+      get '/', :foo => {"<bar>" => "<baz>"}
+      expect(body).to eq('&lt;bar&gt;')
+    end
+
     it 'leaves cache-breaker params untouched' do
       mock_app do |env|
         [200, {'Content-Type' => 'text/plain'}, ['hi']]

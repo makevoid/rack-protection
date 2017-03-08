@@ -73,9 +73,12 @@ module Rack
       end
 
       def escape_hash(hash)
-        hash = hash.dup
-        hash.each { |k,v| hash[k] = escape(v) }
-        hash
+        hash_new = {}
+        hash.each do |key, val|
+          key = escape_string key unless key.is_a? Symbol
+          hash_new[key] = escape(val)
+        end
+        hash_new
       end
 
       def escape_string(str)
